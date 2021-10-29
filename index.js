@@ -15,7 +15,52 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 app.use(cors());
 app.use(express.json());
 
+async function run() {
+    try {
+        await client.connect();
+        const database = client.db('resortManagement');
+        const resortCollection = database.collection('resorts');
 
+        // GET Resorts
+        app.get('/resorts', async (req, res) => {
+            const cursor = resortCollection.find({});
+            const resorts = await cursor.toArray();
+            res.send(resorts);
+        });
+
+        // GET Single Resort
+        app.get('/resorts/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log('getting specific service', id);
+            const query = { _id: ObjectId(id) };
+            const resort = await resortCollection.findOne(query);
+            res.json(resort);
+        })
+
+        // POST Resort
+        app.post('/resorts', async (req, res) => {
+            const resort = req.body;
+            console.log('hit the post api', resort);
+            const result = await resortCollection.insertOne(resort);
+            console.log(result);
+            res.json(result)
+        });
+
+        // DELETE API
+        app.delete('/resorts/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await resortCollection.deleteOne(query);
+            res.json(result);
+        })
+
+    }
+    finally {
+        // await client.close();
+    }
+}
+
+run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
