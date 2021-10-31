@@ -44,13 +44,7 @@ async function run() {
             const resort = await resortCollection.findOne(query);
             res.json(resort);
         })
-        /*  //GET orders by email
-         app.get('/orders/:email', async (req, res) => {
-             const result = await MyOrder.find({
-                 email = req.params.email
-             }).toArray();
-             res.send(result);
-         }); */
+
 
         // get all order by email
         app.get("/myOrders/:email", (req, res) => {
@@ -94,6 +88,33 @@ async function run() {
             const result = await MyOrder.deleteOne(query);
             res.json(result);
         })
+
+
+        /* //Update get
+        app.get('/orders/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await MyOrder.findOne(query);
+            // console.log('load user with id: ', id);
+            res.send(result);
+        })
+
+        //update orders
+        app.put("/orders/:id", async (req, res) => {
+            const id = req.params.id;
+            const updatedStatus = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    status: updatedStatus.status,
+                },
+            };
+            const result = await MyOrder.updateOne(filter, updateDoc, options)
+            console.log('updating', id)
+            res.json(result)
+        }) */
+
 
     }
     finally {
